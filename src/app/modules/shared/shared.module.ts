@@ -5,12 +5,14 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { RouterModule } from '@angular/router';
 import { SidenavComponent } from './components/sidenav/sidenav.component';
 import { MaterialModule } from './material.module';
+import { ConfirmComponent } from './components/confirm/confirm.component';
 
 
 
 @NgModule({
   declarations: [
-    SidenavComponent
+    SidenavComponent,
+    ConfirmComponent
   ],
   exports: [
     SidenavComponent
