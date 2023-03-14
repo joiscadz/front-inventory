@@ -1,10 +1,28 @@
-import { NgModule } from '@angular/core';
+import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
+import  {KeycloakService, KeycloakAngularModule} from "Keycloak-angular"
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { DashboardModule } from './modules/dashboard/dashboard.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+function initializeKeycloak(keycloak: KeycloakService) {
+  return () =>
+    keycloak.init({
+      config: {
+        url: 'http://localhost:8082/',
+        realm: 'Inventory',
+        clientId: 'angular-client'
+      },
+      initOptions: {
+        onLoad: 'login-required',
+        flow: "standard",
+        silentCheckSsoRedirectUri:
+          window.location.origin + '/assets/silent-check-sso.html'
+      },
+      loadUserProfileAtStartUp: true
+    });
+}
 
 
 @NgModule({
@@ -16,9 +34,20 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     BrowserModule,
     AppRoutingModule,
     DashboardModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    KeycloakAngularModule
   ],
-  providers: [],
+  providers: [
+
+   
+      {
+        provide: APP_INITIALIZER,
+        useFactory: initializeKeycloak,
+        multi: true,
+        deps: [KeycloakService]
+      }
+   
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
